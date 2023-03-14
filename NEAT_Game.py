@@ -1,6 +1,7 @@
 from tkinter import *
 from math import *
 import time
+import neat
 root = Tk()
 canvasSizeX = 1000
 canvasSizeY = 600
@@ -15,7 +16,7 @@ playerCenterX = 100
 playerCenterY = 100
 playerOffsetX = 20
 playerOffsetY = 20
-playerDead = "grey"
+playerState = "grey"
 playerWin = False
 mouseAngleToPlayer = 0 
 mouseX = 0
@@ -24,6 +25,12 @@ newCenterOffsetX = 0
 newCenterOffsetY = 0
 # get program start time in ms
 startTime = time.time_ns()/1000000
+
+
+def eval_genomes(genomes, config):
+    for genome_id, genome in genomes:
+        genome.fitness = 100-sqrt((playerCenterX-enemyCenterX[i])*(playerCenterX-enemyCenterX[i])+(playerCenterY-enemyCenterY[i])*(playerCenterY-enemyCenterY[i])) < playerOffsetX*2
+        
 
 def motion(event):
     global mouseX
@@ -83,9 +90,9 @@ def renderPlayer():
     global playerOffsetY
     global poly
     global canvas
-    global playerDead
+    global playerState
     # this causes a slight squishing effect of the player in direction of movement, im pretty sure it's caused by it not rendering in the correct order but it looks cool so im leaving it in
-    poly = canvas.create_polygon([playerCenterX-playerOffsetX, playerCenterY-playerOffsetY, playerCenterX+playerOffsetX, playerCenterY-playerOffsetY, playerCenterX+playerOffsetX, playerCenterY+playerOffsetY, playerCenterX-playerOffsetX, playerCenterY+playerOffsetY], outline=playerDead, fill=playerDead, width=1)
+    poly = canvas.create_polygon([playerCenterX-playerOffsetX, playerCenterY-playerOffsetY, playerCenterX+playerOffsetX, playerCenterY-playerOffsetY, playerCenterX+playerOffsetX, playerCenterY+playerOffsetY, playerCenterX-playerOffsetX, playerCenterY+playerOffsetY], outline=playerState, fill=playerState, width=1)
 
 def renderEnemy():
     global enemyCenterX
@@ -104,12 +111,21 @@ def loseCondition():
     global playerOffsetX
     global playerCenterX
     global playerCenterY
-    global playerDead
+    global playerState
     for i in range(len(enemyCenterX)):
         if sqrt((playerCenterX-enemyCenterX[i])*(playerCenterX-enemyCenterX[i])+(playerCenterY-enemyCenterY[i])*(playerCenterY-enemyCenterY[i])) < playerOffsetX*2:
-            playerDead = "red"
+            playerState = "red"
         else:
-            playerDead = "grey"
+            playerState = "grey"
+
+def winCondition():
+    global playerCenterX
+    global playerCenterY
+    global canvasSizeX
+    global playerState
+    #print(canvasSizeX - playerCenterX)
+    if canvasSizeX - playerCenterX < 100:
+        playerState = "green"
 
 
 root.geometry(str(canvasSizeX)+"x"+str(canvasSizeY)) 
@@ -117,7 +133,7 @@ root.title("NEAT Game")
 
 
 canvas = Canvas(root, width = canvasSizeX, height = canvasSizeY)
-poly = canvas.create_polygon([playerCenterX-playerOffsetX, playerCenterY-playerOffsetY, playerCenterX+playerOffsetX, playerCenterY-playerOffsetY, playerCenterX+playerOffsetX, playerCenterY+playerOffsetY, playerCenterX-playerOffsetX, playerCenterY+playerOffsetY], outline=playerDead, fill=playerDead, width=1)
+poly = canvas.create_polygon([playerCenterX-playerOffsetX, playerCenterY-playerOffsetY, playerCenterX+playerOffsetX, playerCenterY-playerOffsetY, playerCenterX+playerOffsetX, playerCenterY+playerOffsetY, playerCenterX-playerOffsetX, playerCenterY+playerOffsetY], outline=playerState, fill=playerState, width=1)
 enemy = canvas.create_polygon([enemyCenterX[0]-playerOffsetX, enemyCenterY[0]-playerOffsetY, enemyCenterX[0]+playerOffsetX, enemyCenterY[0]-playerOffsetY, enemyCenterX[0]+playerOffsetX, enemyCenterY[0]+playerOffsetY, enemyCenterX[0]-playerOffsetX,enemyCenterY[0]+playerOffsetY], outline='red', fill='red', width=1)
 canvas.pack()
 root.bind('<Motion>', motion)
@@ -130,12 +146,14 @@ while True:
     renderPlayer()
     renderEnemy()
     canvas.update()
-    if currTime-startTime % 2 and playerDead != "red":
+    if currTime-startTime % 2 and playerState == "grey":
         physicsFrames()
         loseCondition()
-    elif playerDead == "red":
+        winCondition()
+    elif playerState != "grey":
         time.sleep(0.4)
-        playerDead = "grey"
+        playerState = "grey"
         playerCenterX = 100
         playerCenterY = 100
     
+
