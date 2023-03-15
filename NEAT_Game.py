@@ -28,8 +28,11 @@ startTime = time.time_ns()/1000000
 
 
 def eval_genomes(genomes, config):
+    global playerCenterX
+    global playerCenterY
     for genome_id, genome in genomes:
-        genome.fitness = 100-sqrt((playerCenterX-enemyCenterX[i])*(playerCenterX-enemyCenterX[i])+(playerCenterY-enemyCenterY[i])*(playerCenterY-enemyCenterY[i])) < playerOffsetX*2
+        genome.fitness = sqrt(1000*1000+600*600)/2-sqrt((playerCenterX-enemyCenterX[i])*(playerCenterX-enemyCenterX[i])+(playerCenterY-enemyCenterY[i])*(playerCenterY-enemyCenterY[i])) < playerOffsetX*2
+        
         
 
 def motion(event):
@@ -51,20 +54,20 @@ def calcmovement(x1, y1, x2, y2):
         
         if x2 >= 0 and y2 >= 0:
             #first quadrant
-            newCenterOffsetX = cos(angle)*0.2
-            newCenterOffsetY = sin(angle)*0.2
+            newCenterOffsetX = cos(angle)*0.4
+            newCenterOffsetY = sin(angle)*0.4
         elif x2 < 0 and y2 >= 0:
             #second quadrant
-            newCenterOffsetX = cos(angle)*0.2
-            newCenterOffsetY = sin(angle)*0.2
+            newCenterOffsetX = cos(angle)*0.4
+            newCenterOffsetY = sin(angle)*0.4
         elif x2 < 0 and y2 < 0:
             #third quadrant
-            newCenterOffsetX = -cos(angle)*0.2
-            newCenterOffsetY = -sin(angle)*0.2
+            newCenterOffsetX = -cos(angle)*0.4
+            newCenterOffsetY = -sin(angle)*0.4
         elif x2 >= 0 and y2 < 0:
             #fourth quadrant
-            newCenterOffsetX = cos(angle)*0.2
-            newCenterOffsetY = sin(angle)*0.2
+            newCenterOffsetX = cos(angle)*0.4
+            newCenterOffsetY = sin(angle)*0.4
     else:
         newCenterOffsetX = 0
         newCenterOffsetY = 0
@@ -156,4 +159,3 @@ while True:
         playerCenterX = 100
         playerCenterY = 100
     
-
