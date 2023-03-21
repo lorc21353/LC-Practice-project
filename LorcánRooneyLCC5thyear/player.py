@@ -12,9 +12,7 @@ class player:
         
         
     
-    def draw(self, playerX, playerY, playerSize):
-        self.pX = playerX
-        self.pY = playerY
+    def draw(self, playerSize):
         self.pS = playerSize
         # this causes a slight squishing effect of the player in direction of movement, im pretty sure it's caused by it not rendering in the correct order but it looks cool so im leaving it in
         poly = self.Canvas.create_polygon([self.pX-self.pS, self.pY-self.pS, self.pX+self.pS, self.pY-self.pS, self.pX+self.pS, self.pY+self.pS, self.pX-self.pS, self.pY+self.pS], outline="grey", fill="grey", width=1)
@@ -58,3 +56,5 @@ class player:
             newCenterOffsetX = 0
             newCenterOffsetY = 0
             
+        self.pX += newCenterOffsetX
+        self.pY += newCenterOffsetY
