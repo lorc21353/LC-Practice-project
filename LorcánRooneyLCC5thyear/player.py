@@ -58,3 +58,7 @@ class player:
             
         self.pX += newCenterOffsetX
         self.pY += newCenterOffsetY
+
+
+    def getPos(self):
+        return [self.pX, self.pY]

@@ -38,3 +38,6 @@ class enemy:
         elif self.gameMode == 2:
             print("simulation")
             
+
+    def getPos(self):
+        return [self.eX, self.eY]

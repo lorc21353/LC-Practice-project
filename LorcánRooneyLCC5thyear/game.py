@@ -43,9 +43,10 @@ class game:
         if (time.time_ns()/1000000 - self.startTime) % 2:
             if self.gameMode == 0:
                 self.Player.calculateMovement(self.mX,self.mY)
-                #print(self.mX, self.mY)
             elif self.gameMode == 1:
-                print("multiplayer")
+                self.Player.calculateMovement(self.mX,self.mY)
+
+                #print("multiplayer")
             elif self.gameMode == 2:
                 print("simulation")
         self.Enemy.draw(10)
@@ -54,9 +55,11 @@ class game:
         
     # this is used to check whether or not the player has beat the AI, i.e whether the player has made it to the other side or if they died
     # this is not only important to have a game end state but also this will be fed almost directly into the reward function
-    #def winOrLose:
-        
-        
-        
-        
-        
+    def winOrLose(self):
+        tempEnemyX = self.Enemy.getPos()[0]
+        tempEnemyY = self.Enemy.getPos()[1]
+        tempPlayerX = self.Player.getPos()[0]
+        tempPlayerY = self.Player.getPos()[1]
+
+        if abs(tempEnemyX - tempPlayerX) < 10 and abs(tempEnemyY - tempPlayerY) < 10:
+            print("close")

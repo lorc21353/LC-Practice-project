@@ -9,3 +9,4 @@ mouseY = 0
 game1 = game.game(0,0,0,0, gameMode)
 while True:
     game1.draw(0,0,10,10)
+    game1.winOrLose()
