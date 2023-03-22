@@ -61,5 +61,14 @@ class game:
         tempPlayerX = self.Player.getPos()[0]
         tempPlayerY = self.Player.getPos()[1]
 
-        if abs(tempEnemyX - tempPlayerX) < 10 and abs(tempEnemyY - tempPlayerY) < 10:
-            print("close")
+        if abs(tempEnemyX - tempPlayerX) < 20 and abs(tempEnemyY - tempPlayerY) < 20:
+            return -1
+        elif abs(1000-tempPlayerX) < 100:
+            return -2
+        else:
+            return sqrt(pow(abs(tempEnemyY - tempPlayerY),2)*pow(abs(tempEnemyX - tempPlayerX),2))
+        
+        
+        
+    def getInputs(self):
+        return [self.Enemy.getPos()[0], self.Enemy.getPos()[1], self.Player.getPos()[0], self.Player.getPost()[1]]
