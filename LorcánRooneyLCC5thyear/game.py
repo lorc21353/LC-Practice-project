@@ -6,16 +6,16 @@ import enemy
 
 
 class game:
-    def __init__(self, moveEnemyX, moveEnemyY, movePlayerX, movePlayerY, gameMode):
+    def __init__(self, root, canvas, moveEnemyX, moveEnemyY, movePlayerX, movePlayerY, gameMode):
         self.mex = moveEnemyX
         self.mey = moveEnemyY
         self.mpx = movePlayerX
         self.mpy = movePlayerY
         self.gameMode = gameMode
-        self.root = Tk()
+        self.root = root
         self.root.geometry(str(1000)+"x"+str(600)) 
         self.root.title("NEAT Game")
-        self.canvas = Canvas(self.root, width = 1000, height = 600)
+        self.canvas = canvas
         self.canvas.pack()
         self.Player = player.player(10,10,10,0,0,self.canvas)
         self.Enemy = enemy.enemy(800, 300, 10, self.canvas, self.gameMode)
@@ -66,9 +66,22 @@ class game:
         elif abs(1000-tempPlayerX) < 100:
             return -2
         else:
-            return sqrt(pow(abs(tempEnemyY - tempPlayerY),2)*pow(abs(tempEnemyX - tempPlayerX),2))
+            return sqrt(pow(tempEnemyX-tempPlayerX, 2) + pow(tempEnemyY-tempPlayerY, 2))
+
+    def dist(self):
+        tempEnemyX = int(self.Enemy.getPos()[0])
+        tempEnemyY = int(self.Enemy.getPos()[1])
+        tempPlayerX = int(self.Player.getPos()[0])
+        tempPlayerY = int(self.Player.getPos()[1])
         
-        
+        #if tempEnemyY == 0 or tempPlayerY == 0 or tempEnemyY - tempPlayerY == 0:
+        #    tempEnemyY = 1
+        #    tempPlayerY = 1
+        #if tempEnemyX == 0 or tempPlayerX == 0 or tempEnemyX - tempPlayerX == 0:
+        #    tempEnemyX = 1
+        #    tempPlayerX = 1
+            
+        return sqrt(pow(tempEnemyX-tempPlayerX, 2) + pow(tempEnemyY-tempPlayerY, 2))
         
     def getInputs(self):
-        return [self.Enemy.getPos()[0], self.Enemy.getPos()[1], self.Player.getPos()[0], self.Player.getPost()[1]]
+        return [self.Enemy.getPos()[0], self.Enemy.getPos()[1], self.Player.getPos()[0], self.Player.getPos()[1]]

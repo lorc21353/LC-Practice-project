@@ -38,20 +38,20 @@ class player:
             
             if x2 >= 0 and y2 >= 0:
                 #first quadrant
-                newCenterOffsetX = cos(angle)*0.2
-                newCenterOffsetY = sin(angle)*0.2
+                newCenterOffsetX = cos(angle)*0.4
+                newCenterOffsetY = sin(angle)*0.4
             elif x2 < 0 and y2 >= 0:
                 #second quadrant
-                newCenterOffsetX = cos(angle)*0.2
-                newCenterOffsetY = sin(angle)*0.2
+                newCenterOffsetX = cos(angle)*0.4
+                newCenterOffsetY = sin(angle)*0.4
             elif x2 < 0 and y2 < 0:
                 #third quadrant
-                newCenterOffsetX = -cos(angle)*0.2
-                newCenterOffsetY = -sin(angle)*0.2
+                newCenterOffsetX = -cos(angle)*0.4
+                newCenterOffsetY = -sin(angle)*0.4
             elif x2 >= 0 and y2 < 0:
                 #fourth quadrant
-                newCenterOffsetX = cos(angle)*0.2
-                newCenterOffsetY = sin(angle)*0.2
+                newCenterOffsetX = cos(angle)*0.4
+                newCenterOffsetY = sin(angle)*0.4
         else:
             newCenterOffsetX = 0
             newCenterOffsetY = 0

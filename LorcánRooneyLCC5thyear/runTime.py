@@ -4,15 +4,19 @@ import enemy
 import neat
 import time
 import os
+from tkinter import *
 gameMode = int(input("select gamemode (0 = singleplayer, 1 = multiplayer, 2 = simualtion): "))
+root = Tk()
+canvas = Canvas(root, width = 1000, height = 600)
+runs_per_net = 1
+game_time = 25
 
-runs_per_net = 5
-game_time = 10
 
 def eval_genome(genome, config):
     global gameMode
     global runs_per_net
     global game_time
+    currTime = 0
     startTime = time.time_ns()/1000000000
     
     net = neat.nn.FeedForwardNetwork.create(genome, config)
@@ -21,38 +25,38 @@ def eval_genome(genome, config):
     
     # do the required number of runs for each net
     for run in range(runs_per_net):
-        game = game.game(0,0,0,0, gameMode)
+        mostestClosest = 10000000
+        Game = game.game(root, canvas, 0,0,0,0, gameMode)
+        #global Game
         fitness = 0
         
         while currTime-startTime <= game_time:
+            if Game.dist() < mostestClosest:
+                mostestClosest = Game.dist()
             currTime = time.time_ns()/1000000000     
-            inputs = game.getInputs()
+            inputs = Game.getInputs()
             outputs = net.activate(inputs)
-            game.Enemy.movement(outputs)
-            game.draw(0,0,0,0)
-            if game.winOrLose() == -1:
-                fitness = 1000
-            elif game.winOrLose() == -2:
-                fitness = 0
+            Game.Enemy.movement(outputs)
+            Game.draw(0,0,0,0)
+            if Game.winOrLose() == -1:
+                fitness = 100000
+                break
+            elif Game.winOrLose() == -2:
+                fitness = 1500-Game.dist()
+                break
+            elif mostestClosest - Game.dist() > 1500:
+                fitness = 1000-mostestClosest
             else:
-                fitness = -970+game.winOrLose()
+                fitness = 1000-mostestClosest
                 
         fitnesses.append(fitness)
-        
     # genomes fitness is its worst across all of its runs
     return min(fitnesses)
 
 def eval_genomes(genomes, config):
     for genome_id, genome in genomes:
-        genome.fitness = eval_genome()
+        genome.fitness = eval_genome(genome, config)
         
-# placeHolder code to check if the default game without AI is working
-# mouseX = 0
-# mouseY = 0
-# game1 = game.game(0,0,0,0, gameMode)
-# while True:
-#     game1.draw(0,0,10,10)
-#     print(game1.winOrLose())
 
 def run():
     # Load the config file, which is assumed to live in
@@ -62,17 +66,13 @@ def run():
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_path)
-
-    pop = neat.Population(config)
     
     pop = neat.Population(config)
     stats = neat.StatisticsReporter()
     pop.add_reporter(stats)
     pop.add_reporter(neat.StdOutReporter(True))
 
-    pe = neat.ParallelEvaluator(1, eval_genome)
-    winner = pop.run(pe.evaluate)
-    print(winner)
+    winner = pop.run(eval_genomes, 6)
     
     
 if __name__ == '__main__':

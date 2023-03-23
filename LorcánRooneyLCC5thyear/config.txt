@@ -3,6 +3,7 @@ fitness_criterion     = max
 fitness_threshold     = 60.0
 pop_size              = 20
 reset_on_extinction   = 0
+no_fitness_termination = False
 
 [DefaultGenome]
 num_inputs              = 4
