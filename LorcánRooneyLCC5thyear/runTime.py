@@ -42,7 +42,7 @@ def eval_genome(genome, config):
                 fitness = 100000
                 break
             elif Game.winOrLose() == -2:
-                fitness = 1500-Game.dist()
+                fitness = 500-mostestClosest
                 break
             elif mostestClosest - Game.dist() > 1500:
                 fitness = 1000-mostestClosest
@@ -59,20 +59,21 @@ def eval_genomes(genomes, config):
         
 
 def run():
-    # Load the config file, which is assumed to live in
-    # the same directory as this script.
+    # boilder place code to load the config file
     local_dir = os.path.dirname(__file__)
     config_path = os.path.join(local_dir, 'config.txt')
     config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
                          config_path)
     
+    # boiler plate code to create and record the populations
     pop = neat.Population(config)
     stats = neat.StatisticsReporter()
     pop.add_reporter(stats)
     pop.add_reporter(neat.StdOutReporter(True))
 
-    winner = pop.run(eval_genomes, 6)
+    # run the AI
+    pop.run(eval_genomes, 6)
     
     
 if __name__ == '__main__':
