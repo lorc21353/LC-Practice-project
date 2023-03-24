@@ -54,42 +54,6 @@ def eval_genome(genome, config):
             fitnesses.append(fitness)
         # genomes fitness is its worst across all of its runs
         return min(fitnesses)
-    elif gameMode == 2:
-        if enemyNet:
-            # declare a local var called net that is the current genome's net
-            net = neat.nn.FeedForwardNetwork.create(genome, config)
-            # as there is may be more than one run per genome the fitness will need to reflect the normal performance, thus it is placed in a list
-            fitnesses = []
-            
-            averageDists = [] 
-            fitness = 0
-                
-                # optimisation to make the game run at a higher framerate by only taking distance measurements once every 200ms
-            if currTime % 0.2 == 0:
-              averageDists.append(Game.dist())
-              currTime = time.time_ns()/1000000000     
-            inputs = Game.getInputs()
-            outputs = net.activate(inputs)
-            Game.Player.calculateMovement(0,0,outputs)
-            if Game.winOrLose() == -1:
-                fitness = 100000
-            elif Game.winOrLose() == -2:
-                fitness = 500-statistics.mean(averageDists)
-            else:
-                fitness = 1000-statistics.mean(averageDists)
-                        
-            fitnesses.append(fitness)
-             
-            # genomes fitness is its worst across all of its runs
-            return min(fitnesses)
-        
-        # playerNet fitness function
-        elif True != enemyNet:
-            if Game.winOrLose() == -1:
-                fitness = 0
-            elif Game.winOrLose == -2:
-                fitness = 1000-Game.dist()/100
-            return fitness
     
         
 
@@ -101,6 +65,44 @@ def eval_genomes(genomes, config):
     if gameMode == 2:
         genome.fitness = eval_genome(genome, config)
         
+ # playerNet fitness function for sim mode
+def eval_player(genome, config):
+    net = neat.nn.FeedForwardNetwork.create(genome, config)
+    inputs = Game.getInputs()
+    if Game.winOrLose() == -1:
+            fitness = 0
+    elif Game.winOrLose == -2:
+        fitness = 1000-Game.dist()/100
+    return fitness
+
+def eval_enemy(genome, config):
+    if enemyNet:
+        # declare a local var called net that is the current genome's net
+        net = neat.nn.FeedForwardNetwork.create(genome, config)
+        # as there is may be more than one run per genome the fitness will need to reflect the normal performance, thus it is placed in a list
+        fitnesses = []
+        
+        averageDists = [] 
+        fitness = 0
+            
+            # optimisation to make the game run at a higher framerate by only taking distance measurements once every 200ms
+        if currTime % 0.2 == 0:
+            averageDists.append(Game.dist())
+            currTime = time.time_ns()/1000000000     
+        inputs = Game.getInputs()
+        outputs = net.activate(inputs)
+        Game.Player.calculateMovement(0,0,outputs)
+        if Game.winOrLose() == -1:
+            fitness = 100000
+        elif Game.winOrLose() == -2:
+            fitness = 500-statistics.mean(averageDists)
+        else:
+            fitness = 1000-statistics.mean(averageDists)
+                        
+        fitnesses.append(fitness)
+             
+        # genomes fitness is its worst across all of its runs
+        return min(fitnesses)
 
 def run():
     # boilder place code to load the config file
