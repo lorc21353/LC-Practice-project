@@ -17,7 +17,7 @@ class game:
         self.root.title("NEAT Game")
         self.canvas = canvas
         self.canvas.pack()
-        self.Player = player.player(10,10,10,0,0,self.canvas)
+        self.Player = player.player(10,10,10,0,0,self.canvas, self.gameMode)
         self.Enemy = enemy.enemy(800, 300, 10, self.canvas, self.gameMode)
         self.startTime = time.time_ns()/1000000
         
@@ -41,14 +41,9 @@ class game:
             self.mY = 0
         self.canvas.delete("all")
         if (time.time_ns()/1000000 - self.startTime) % 2:
-            if self.gameMode == 0:
-                self.Player.calculateMovement(self.mX,self.mY)
-            elif self.gameMode == 1:
-                self.Player.calculateMovement(self.mX,self.mY)
+            if self.gameMode == 0 or 1:
+                self.Player.calculateMovement(self.mX,self.mY,None)
 
-                #print("multiplayer")
-            elif self.gameMode == 2:
-                print("simulation")
         self.Enemy.draw(10)
         self.Player.draw(10)
         self.canvas.update()

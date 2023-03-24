@@ -20,7 +20,7 @@ class enemy:
         self.negY = outputs[3]
         # four output nodes are required: positive X, negative X, positive Y, negative Y. by changing these around you can create movement in all directions--
         # --or even stand still by activating pos and neg at the same time, this allows the AI to have full control of its body while maintaining as few output nodes as i can
-        if self.gameMode == 0:
+        if self.gameMode == 0 or 2:
             
             if self.posX == 1 and self.eX < 1000:
                 self.eX += 0.5
@@ -32,11 +32,9 @@ class enemy:
                 self.eY -= 0.5
                 
                 
-        # placeholder multiplayer and simulation    
+        # placeholder multiplayer 
         elif self.gameMode == 1:
             print("multiplayer")
-        elif self.gameMode == 2:
-            print("simulation")
             
 
     def getPos(self):
