@@ -41,7 +41,7 @@ class game:
             self.mY = 0
         self.canvas.delete("all")
         if (time.time_ns()/1000000 - self.startTime) % 2:
-            if self.gameMode == 0 or 1:
+            if self.gameMode == 0 or self.gameMode == 1:
                 self.Player.calculateMovement(self.mX,self.mY,None)
 
         self.Enemy.draw(10)

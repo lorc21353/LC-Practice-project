@@ -22,7 +22,7 @@ class player:
     
     
     def calculateMovement(self, mouseX, mouseY, outputs):
-        if self.gameMode == 0 or 1:
+        if self.gameMode == 0 or self.gameMode == 1:
             x1 = self.pX
             y1 = self.pY
             self.mX = mouseX
