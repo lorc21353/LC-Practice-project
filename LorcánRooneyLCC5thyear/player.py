@@ -67,16 +67,15 @@ class player:
             self.negY = outputs[3]
             # four output nodes are required: positive X, negative X, positive Y, negative Y. by changing these around you can create movement in all directions--
             # --or even stand still by activating pos and neg at the same time, this allows the AI to have full control of its body while maintaining as few output nodes as i can
-            if self.gameMode == 2:
                 
-                if self.posX == 1 and self.pX < 1000:
-                    self.pX += 0.5
-                if self.posY == 1 and self.pY < 600:
-                    self.pY += 0.5
-                if self.negX == 1 and self.pX > 0:
-                    self.pX -= 0.5
-                if self.negY == 1 and self.pY > 0:
-                    self.pY -= 0.5
+            if self.posX == 1 and self.pX < 1000:
+                self.pX += 0.5
+            if self.posY == 1 and self.pY < 600:
+                self.pY += 0.5
+            if self.negX == 1 and self.pX > 0:
+                self.pX -= 0.5
+            if self.negY == 1 and self.pY > 0:
+                self.pY -= 0.5
 
 
     def getPos(self):

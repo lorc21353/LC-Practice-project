@@ -17,6 +17,7 @@ generations = 1
 #enemyNet = True
 global Game
 global pop2
+global currGame
 
 # fitness function for the network
 def eval_genome(genome, config):
@@ -67,50 +68,65 @@ def eval_genomes(genomes, config):
             genome.fitness = eval_genome(genome, config)
             
     elif gameMode == 2:
+        j = 0
         for genome_id, genome in genomes:
-            genome.fitness = eval_enemy(genome, config)
+            j+=1
+            genome.fitness = eval_enemy(genome, config, j)
+        pop2.run(returnExistingFitnessValues, 1)
 
         
  # playerNet fitness function for sim mode
-def eval_player(genome, config):
+def eval_player(genome, config, currentGame):
+    genome = genome[1]
     fitness = 0
     net = neat.nn.FeedForwardNetwork.create(genome, config)
-    inputs = Game.getInputs()
+    inputs = currentGame.getInputs()
     outputs = net.activate(inputs)
-    Game.Player.calculateMovement(0,0,outputs)
-    if Game.winOrLose() == -1:
+    currentGame.Player.calculateMovement(0,0,outputs)
+    if currentGame.winOrLose() == -1:
             fitness = 0
-    elif Game.winOrLose == -2:
-        fitness = 1000-Game.dist()/100
+    elif currentGame.winOrLose() == -2:
+        fitness = 1000+currentGame.dist()/100
+    else:
+        fitness = 500+currentGame.dist()/10
     return fitness
 
-def eval_enemy(genome, config):
+def returnExistingFitnessValues(genomes, config):
+    for gneomeid, genome in genomes:
+        genome.fitness = genome.fitness
+        print(genome.fitness, genome)
+
+def eval_enemy(genome, config, j):
+        global currGame
+        currGame = []
         global pop2
-        Game = game.game(root, canvas, 0,0,0,0,2)
+        currGame = game.game(root, canvas, 0,0,0,0,2)
+        population2 = list(iteritems(pop2.population))
         iters = 0
         # declare a local var called net that is the current genome's net
         net = neat.nn.FeedForwardNetwork.create(genome, config)
-        while iters < 1500:
-            print(iters)
+        while iters < 2500:
             iters += 1
-            inputs = Game.getInputs()
+            inputs = currGame.getInputs()
             outputs = net.activate(inputs)
-            Game.Enemy.movement(outputs)
-            
-            for genome_id, genome in list(iteritems((pop2.population))):
-                genome.fitness = eval_player(genome, config)
+            currGame.Enemy.movement(outputs)
+            genome = population2[j-1]
+            eval_player(genome, config, currGame)
+            #print(pop2.population[j].fitness)
+            currGame.Player.draw(20)
             
             fitness = 0
             
-            if Game.winOrLose() == -1:
+            if currGame.winOrLose() == -1:
                 fitness = 100000
-            elif Game.winOrLose() == -2:
-                fitness = 500-Game.dist()
+            elif currGame.winOrLose() == -2:
+                fitness = 500-currGame.dist()
             else:
-                fitness = 1000-Game.dist()
+                fitness = 1000-currGame.dist()
                 
-            Game.draw(0,0,0,0)
-                 
+            currGame.draw(0,0,0,0)
+        pop2.population[j].fitness = eval_player(genome, config, currGame)
+        print(pop2.population[j].fitness)
         return fitness
     
 
