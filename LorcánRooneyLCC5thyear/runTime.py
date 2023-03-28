@@ -63,6 +63,14 @@ def eval_genome(genome, config):
         
 
 def eval_genomes(genomes, config):
+    global pop2
+    reporters = pop2.reporters
+    stagnation = config.stagnation_type(config.stagnation_config, reporters)
+    reproduction = config.reproduction_type(config.reproduction_config, reporters, stagnation)
+    species = config.species_set_type(config.species_set_config, reporters)
+    species.speciate(config, pop2.population, pop2.generation)
+
+
     if gameMode == 0:
         for genome_id, genome in genomes:
             genome.fitness = eval_genome(genome, config)
@@ -72,8 +80,7 @@ def eval_genomes(genomes, config):
         for genome_id, genome in genomes:
             j+=1
             genome.fitness = eval_enemy(genome, config, j)
-        pop2.run(returnExistingFitnessValues, 1)
-
+        pop2 = reproduction.reproduce(config, pop2.species, config.pop_size, pop2.generation)
         
  # playerNet fitness function for sim mode
 def eval_player(genome, config, currentGame):
