@@ -65,7 +65,9 @@ def eval_genome(genome, config):
 global stagnation
 global reporters
 global species
+global pop
 def eval_genomes(genomes, config):
+    global pop
     global pop2
     global stagnation
     global reporters
@@ -80,13 +82,18 @@ def eval_genomes(genomes, config):
             
     elif gameMode == 2:
         j = 0
+        pop2.reporters.start_generation(pop2.generation)
         for genome_id, genome in genomes:
             j+=1
             if j >= len(list(iteritems(pop2.population))):
                 j = 0
+                print("something has gone very wrong here")
+                print("there are only", len(list(iteritems(pop2.population))), "there should be", len(list(iteritems(pop.population))))
             genome.fitness = eval_enemy(genome, config, j)
         pop2.population = pop2.reproduction.reproduce(config, pop2.species, config.pop_size, pop2.generation)
         pop2.species.speciate(config, pop2.population, pop2.generation)
+        pop2.reporters.end_generation(config, pop2.population, pop2.species)
+        pop2.generation+=1
         
  # playerNet fitness function for sim mode
 def eval_player(genome, config, currentGame):
@@ -131,7 +138,7 @@ def eval_enemy(genome, config, j):
             fitness = 0
             
             if currGame.winOrLose() == -1:
-                fitness = 100000
+                fitness = 100000-iters
                 break
             elif currGame.winOrLose() == -2:
                 fitness = 500-currGame.dist()
@@ -141,11 +148,13 @@ def eval_enemy(genome, config, j):
                 
             currGame.draw(0,0,0,0)
         population2[j-1][1].fitness = eval_player(genome, config, currGame)
-        print(population2[j-1][1].fitness)
+        print(population2[j-1][1].fitness, "player fitness value")
+        print(fitness, "enemy fitness value")
         return fitness
     
 
 def run():
+    global pop
     global pop2
     # boilder place code to load the config file
     local_dir = os.path.dirname(__file__)
