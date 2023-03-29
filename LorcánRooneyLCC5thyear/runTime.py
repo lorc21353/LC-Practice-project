@@ -90,7 +90,10 @@ def eval_genomes(genomes, config):
                 print("something has gone very wrong here")
                 print("there are only", len(list(iteritems(pop2.population))), "there should be", len(list(iteritems(pop.population))))
             genome.fitness = eval_enemy(genome, config, j)
-        pop2.population = pop2.reproduction.reproduce(config, pop2.species, config.pop_size, pop2.generation)
+        try:
+            pop2.population = pop2.reproduction.reproduce(config, pop2.species, config.pop_size, pop2.generation)
+        except:
+            print("reproduction error for pop2")
         pop2.species.speciate(config, pop2.population, pop2.generation)
         pop2.reporters.end_generation(config, pop2.population, pop2.species)
         pop2.generation+=1

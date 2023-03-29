@@ -7,7 +7,7 @@ no_fitness_termination = True
 
 [DefaultGenome]
 num_inputs              = 4
-num_hidden              = 2
+num_hidden              = 4
 num_outputs             = 4
 initial_connection      = partial_direct 0.5
 feed_forward            = True
@@ -52,7 +52,7 @@ enabled_mutate_rate     = 0.04
 compatibility_threshold = 3.0
 
 [DefaultStagnation]
-species_fitness_func = min
+species_fitness_func = mean
 max_stagnation  = 20
 
 [DefaultReproduction]
