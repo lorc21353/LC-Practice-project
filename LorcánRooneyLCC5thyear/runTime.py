@@ -11,7 +11,7 @@ canvas = Canvas(root, width = 1000, height = 600)
 runs_per_net = 1
 game_time = 25
 sim_game_time = 5
-generations = 1
+generations = 15
 #var to check which net is doing its fitness calc during simulation play
 #no longer used
 #enemyNet = True
@@ -42,11 +42,12 @@ def eval_genome(genome, config):
                 # optimisation to make the game run at a higher framerate by only taking distance measurements once every 200ms
                 if currTime % 0.2 == 0:
                     averageDists.append(Game.dist())
-                currTime = time.time_ns()/1000000000     
-                inputs = Game.getInputs()
-                outputs = net.activate(inputs)
-                Game.Enemy.movement(outputs)
-                Game.draw(0,0,0,0)
+                currTime = time.time_ns()/1000000000
+                if currTime % 0.02:
+                    inputs = Game.getInputs()
+                    outputs = net.activate(inputs)
+                    Game.Enemy.movement(outputs)
+                    Game.draw(0,0,0,0)
                 if Game.winOrLose() == -1:
                     fitness = 100000
                     break
@@ -60,15 +61,17 @@ def eval_genome(genome, config):
         # genomes fitness is its worst across all of its runs
         return min(fitnesses)
     
-        
 
+global stagnation
+global reporters
+global species
 def eval_genomes(genomes, config):
     global pop2
-    reporters = pop2.reporters
-    stagnation = config.stagnation_type(config.stagnation_config, reporters)
-    reproduction = config.reproduction_type(config.reproduction_config, reporters, stagnation)
-    species = config.species_set_type(config.species_set_config, reporters)
-    species.speciate(config, pop2.population, pop2.generation)
+    global stagnation
+    global reporters
+    global species
+    if gameMode == 2:
+        reproduction = config.reproduction_type(config.reproduction_config, reporters, stagnation)
 
 
     if gameMode == 0:
@@ -80,7 +83,8 @@ def eval_genomes(genomes, config):
         for genome_id, genome in genomes:
             j+=1
             genome.fitness = eval_enemy(genome, config, j)
-        pop2 = reproduction.reproduce(config, pop2.species, config.pop_size, pop2.generation)
+        pop2.population = pop2.reproduction.reproduce(config, pop2.species, config.pop_size, pop2.generation)
+        pop2.species.speciate(config, pop2.population, pop2.generation)
         
  # playerNet fitness function for sim mode
 def eval_player(genome, config, currentGame):
@@ -126,14 +130,16 @@ def eval_enemy(genome, config, j):
             
             if currGame.winOrLose() == -1:
                 fitness = 100000
+                break
             elif currGame.winOrLose() == -2:
                 fitness = 500-currGame.dist()
+                break
             else:
                 fitness = 1000-currGame.dist()
                 
             currGame.draw(0,0,0,0)
-        pop2.population[j].fitness = eval_player(genome, config, currGame)
-        print(pop2.population[j].fitness)
+        population2[j-1][1].fitness = eval_player(genome, config, currGame)
+        print(population2[j-1][1].fitness)
         return fitness
     
 
@@ -157,6 +163,12 @@ def run():
         stats2 = neat.StatisticsReporter()
         pop2.add_reporter(stats2)
         pop2.add_reporter(neat.StdOutReporter(True))
+        global stagnation
+        stagnation = config.stagnation_type(config.stagnation_config, pop2.reporters)
+        global reporters
+        reporters = pop2.reporters
+        global species
+        species = config.species_set_type(config.species_set_config, reporters)
         
 
     # run the AI for a number of generations using eval_genomes as the fitness fuction
