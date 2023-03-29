@@ -11,7 +11,7 @@ canvas = Canvas(root, width = 1000, height = 600)
 runs_per_net = 1
 game_time = 25
 sim_game_time = 5
-generations = 15
+generations = 150
 #var to check which net is doing its fitness calc during simulation play
 #no longer used
 #enemyNet = True
@@ -82,6 +82,8 @@ def eval_genomes(genomes, config):
         j = 0
         for genome_id, genome in genomes:
             j+=1
+            if j >= len(list(iteritems(pop2.population))):
+                j = 0
             genome.fitness = eval_enemy(genome, config, j)
         pop2.population = pop2.reproduction.reproduce(config, pop2.species, config.pop_size, pop2.generation)
         pop2.species.speciate(config, pop2.population, pop2.generation)
