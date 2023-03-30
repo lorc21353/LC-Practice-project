@@ -40,26 +40,43 @@ class player:
                 
                 if x2 >= 0 and y2 >= 0:
                     #first quadrant
-                    newCenterOffsetX = cos(angle)*0.4
-                    newCenterOffsetY = sin(angle)*0.4
+                    if self.gameMode == 0:
+                        newCenterOffsetX = cos(angle)*0.4
+                        newCenterOffsetY = sin(angle)*0.4
+                    elif self.gameMode == 1:
+                        newCenterOffsetX = cos(angle)*0.8
+                        newCenterOffsetY = sin(angle)*0.8
                 elif x2 < 0 and y2 >= 0:
                     #second quadrant
-                    newCenterOffsetX = cos(angle)*0.4
-                    newCenterOffsetY = sin(angle)*0.4
+                    if self.gameMode == 0:
+                        newCenterOffsetX = cos(angle)*0.4
+                        newCenterOffsetY = sin(angle)*0.4
+                    elif self.gameMode == 1:
+                        newCenterOffsetX = cos(angle)*0.8
+                        newCenterOffsetY = sin(angle)*0.8
                 elif x2 < 0 and y2 < 0:
                     #third quadrant
-                    newCenterOffsetX = -cos(angle)*0.4
-                    newCenterOffsetY = -sin(angle)*0.4
+                    if self.gameMode == 0:
+                        newCenterOffsetX = -cos(angle)*0.4
+                        newCenterOffsetY = -sin(angle)*0.4
+                    elif self.gameMode == 1:
+                        newCenterOffsetX = -cos(angle)*0.8
+                        newCenterOffsetY = -sin(angle)*0.8
                 elif x2 >= 0 and y2 < 0:
                     #fourth quadrant
-                    newCenterOffsetX = cos(angle)*0.4
-                    newCenterOffsetY = sin(angle)*0.4
+                    if self.gameMode == 0:
+                        newCenterOffsetX = cos(angle)*0.4
+                        newCenterOffsetY = sin(angle)*0.4
+                    elif self.gameMode == 1:
+                        newCenterOffsetX = cos(angle)*0.8
+                        newCenterOffsetY = sin(angle)*0.8
             else:
                 newCenterOffsetX = 0
                 newCenterOffsetY = 0
                 
             self.pX += newCenterOffsetX
             self.pY += newCenterOffsetY
+                
         elif self.gameMode == 2:
             self.posX = outputs[0]
             self.posY = outputs[1]

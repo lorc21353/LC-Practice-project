@@ -1,4 +1,5 @@
 import game
+import keyboard
 import neat
 import time
 import os
@@ -184,15 +185,46 @@ def run():
         global species
         species = config.species_set_type(config.species_set_config, reporters)
         
-
+    global Game
     # run the AI for a number of generations using eval_genomes as the fitness fuction
     if gameMode == 0:
         winner = pop.run(eval_genomes, generations)
         print(winner)
     elif gameMode == 1:
-        print("multiplayer")
+        Game = game.game(root, canvas, 0,0,0,0, gameMode)
+        gameWon = False
+        while True:
+            outputs = [None, None, None, None]
+            if keyboard.is_pressed('w'):
+                outputs[3] = 1
+            else:
+                outputs[3] = 0
+            if keyboard.is_pressed('a'):
+                outputs[2] = 1
+            else:
+                outputs[2] = 0
+            if keyboard.is_pressed('s'):
+                outputs[1] = 1
+            else:
+                outputs[1] = 0
+            if keyboard.is_pressed('d'):
+                outputs[0] = 1
+            else:
+                outputs[0] = 0
+            Game.Enemy.movement(outputs)
+            if Game.winOrLose() == -1:
+                print("Player 2 wins")
+                gameWon = True
+            elif Game.winOrLose() == -2:
+                print("Player 1 wins")
+                gameWon = True
+            Game.draw(0,0,0,0)
+            
+            while gameWon:
+                if keyboard.is_pressed(' '):
+                    Game = game.game(root, canvas, 0,0,0,0, gameMode)
+                    gameWon = False
     elif gameMode == 2:
-        global Game
         # declare a game for simulation play
         Game = game.game(root, canvas, 0,0,0,0, gameMode)
             #enemyNet = True
