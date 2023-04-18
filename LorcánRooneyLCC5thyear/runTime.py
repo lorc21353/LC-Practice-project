@@ -79,7 +79,7 @@ def eval_genome(genome, config):
         plotGenerationNumberEnemy.append(pop.generation)
         return min(fitnesses)
     
-# declare the local vars used for sim mode
+# declare the global vars used for sim mode
 global stagnation
 global reporters
 global species
@@ -211,7 +211,7 @@ def run():
         stats2 = neat.StatisticsReporter()
         pop2.add_reporter(stats2)
         pop2.add_reporter(neat.StdOutReporter(True))
-        # declare global variables typically contained in the population class, however i found it to simply be easier for this project to just make them global instead as i need to access them a lot from outside of the population class
+        # retrieve and set global variables typically contained in the population class, however i found it to simply be easier for this project to just make them global instead as i need to access them a lot from outside of the population class
         global stagnation
         stagnation = config.stagnation_type(config.stagnation_config, pop2.reporters)
         global reporters
@@ -264,7 +264,7 @@ def run():
         # declare a game for simulation play
         Game = game.game(root, canvas, 0,0,0,0, gameMode)
         
-        pop.run(eval_genomes, 1)
+        pop.run(eval_genomes, 10)
 
     
 #check if you are in the main file and if you are run the program (this is a library requirement)
@@ -274,8 +274,8 @@ if __name__ == '__main__':
 import sumfitnesses
 
 plotMeanFitnessEnemy = sumfitnesses.sumfitnesses()
-print(plotFitnessOfEnemy)
-print(plotGenerationNumberEnemy)
+#print(plotFitnessOfEnemy)
+#print(plotGenerationNumberEnemy)
 print(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy))
 plt.plot(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy))
 plt.show()

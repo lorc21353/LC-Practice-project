@@ -1,5 +1,3 @@
-from random import *
-
 class sumfitnesses:
     
     def __init__(self):
