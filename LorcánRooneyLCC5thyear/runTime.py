@@ -264,28 +264,18 @@ def run():
         # declare a game for simulation play
         Game = game.game(root, canvas, 0,0,0,0, gameMode)
         
-        pop.run(eval_genomes, 3)
+        pop.run(eval_genomes, 1)
 
     
 #check if you are in the main file and if you are run the program (this is a library requirement)
 if __name__ == '__main__':
     run()
 
-plotMeanFitnessEnemy = []
-runningTotal = 0
-j = 0
-for i in range(len(plotGenerationNumberEnemy)):
-    if i == 0:
-        runningTotal += plotFitnessOfEnemy[i]
-        i = 1
-    if plotGenerationNumberEnemy[i] == plotGenerationNumberEnemy[i-1]:
-        runningTotal += plotFitnessOfEnemy[i]
-        j += 1
-    else:
-        plotMeanFitnessEnemy.append(runningTotal/j)
-        j = 0
-        runningTotal = 0
+import sumfitnesses
+
+plotMeanFitnessEnemy = sumfitnesses.sumfitnesses()
 print(plotFitnessOfEnemy)
 print(plotGenerationNumberEnemy)
-plt.plot(plotGenerationNumberEnemy, plotFitnessOfEnemy)
+print(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy))
+plt.plot(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy))
 plt.show()
