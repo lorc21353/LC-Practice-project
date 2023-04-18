@@ -1,4 +1,4 @@
-# import the libraries required
+# import the libraries and classes required
 import game
 import keyboard
 import neat
@@ -15,23 +15,25 @@ runs_per_net = 1 # how many runs each net gets
 game_time = 25 # how long a singleplayer game is
 sim_game_time = 5 # unused 
 generations = 6 # how many generations should the single player mode run for
-#var to check which net is doing its fitness calc during simulation play
-#no longer used
-#enemyNet = True
 # declare the most important global variables
 global Game
 global pop2
 global currGame
 global plotFitnessOfEnemy
+global plotGenerationNumberEnemy
+plotGenerationNumberEnemy = []
 plotFitnessOfEnemy = []
 global plotFitnessOfPlayer
+global plotGenerationNumberPlayer
+plotGenerationNumberPlayer = []
 plotFitnessOfPlayer = []
 
 # fitness function for the network
 def eval_genome(genome, config):
     # get the globals
     global Game
-    global plotFitnessOfPlayer
+    global plotFitnessOfEnemy
+    global plotGenerationNumberEnemy
     # declare the local variables
     currTime = 0.0
     startTime = time.time_ns()/1000000000
@@ -44,17 +46,19 @@ def eval_genome(genome, config):
         
         # do the required number of runs for each net
         for runs in range(runs_per_net):
-            averageDists = [] 
+            averageDists = []
             # declare a new instance of the game class and parse the required data 
             Game = game.game(root, canvas, 0,0,0,0, gameMode)
+            averageDists.append(Game.dist())
             fitness = 0
             
             while currTime-startTime <= game_time:
-                # optimisation to make the game run at a higher framerate by only taking distance measurements once every 200ms
-                if currTime % 0.2 == 0:
-                    averageDists.append(Game.dist())
-
                 currTime = time.time_ns()/1000000000 # set the current time to the current real life time 
+                # optimisation to make the game run at a higher framerate by only taking distance measurements once every 200ms
+                #print(round(currTime % 0.2, 2))
+                if round(currTime % 0.2, 2) == 0:
+                    averageDists.append(Game.dist())
+                    
                 if currTime % 0.02: # 30 times a second 
                     inputs = Game.getInputs() # get current game state
                     outputs = net.activate(inputs) # pass game state to neural net
@@ -71,7 +75,8 @@ def eval_genome(genome, config):
                     
             fitnesses.append(fitness) # add the fitness to the fitnesses list
         # genomes fitness is its worst across all of its runs
-        plotFitnessOfPlayer.append(min(fitnesses))
+        plotFitnessOfEnemy.append(min(fitnesses))
+        plotGenerationNumberEnemy.append(pop.generation)
         return min(fitnesses)
     
 # declare the local vars used for sim mode
@@ -116,6 +121,8 @@ def eval_genomes(genomes, config):
         
  # playerNet fitness function for sim mode
 def eval_player(genome, config, currentGame):
+    global plotGenerationNumberPlayer
+    global plotFitnessOfPlayer
     genome = genome[1] # set the genome to the actual genome and ignore the id value at position 0
     fitness = 0 # local var fitness
     net = neat.nn.FeedForwardNetwork.create(genome, config) # create the net using the library function and pass the genome for the player and the config file
@@ -128,6 +135,8 @@ def eval_player(genome, config, currentGame):
         fitness = 1000+currentGame.dist()/100
     else: # if nobody wins the player fitness is a middle value plus the distance to the enemy
         fitness = 500+currentGame.dist()/10
+    plotFitnessOfPlayer.append(fitness)
+    plotGenerationNumberPlayer.append(pop2.generation)
     return fitness # return the fitness value calculated
 
 def returnExistingFitnessValues(genomes, config):
@@ -137,6 +146,9 @@ def returnExistingFitnessValues(genomes, config):
 
 def eval_enemy(genome, config, j):
     # get the globals and delare the locals needed
+        global plotFitnessOfPlayer
+        global plotFitnessOfEnemy
+        global plotGenerationNumberEnemy
         global currGame
         currGame = []
         global pop2
@@ -170,6 +182,8 @@ def eval_enemy(genome, config, j):
         population2[j-1][1].fitness = eval_player(genome, config, currGame) # set the fitness value of the current player genome to the output of the player fitness function
         print(population2[j-1][1].fitness, "player fitness value") # print the player fitness and the enemy fitness
         print(fitness, "enemy fitness value")
+        plotFitnessOfEnemy.append(fitness)
+        plotGenerationNumberEnemy.append(pop.generation)
         return fitness # return the enemy fitness value
     
 
@@ -249,10 +263,29 @@ def run():
     elif gameMode == 2: # when simulation mode is on create a new game instance and call the run function on pop
         # declare a game for simulation play
         Game = game.game(root, canvas, 0,0,0,0, gameMode)
-        pop.run(eval_genomes, 200)
+        
+        pop.run(eval_genomes, 3)
 
     
 #check if you are in the main file and if you are run the program (this is a library requirement)
 if __name__ == '__main__':
-    run()    
-    plt.plot()
+    run()
+
+plotMeanFitnessEnemy = []
+runningTotal = 0
+j = 0
+for i in range(len(plotGenerationNumberEnemy)):
+    if i == 0:
+        runningTotal += plotFitnessOfEnemy[i]
+        i = 1
+    if plotGenerationNumberEnemy[i] == plotGenerationNumberEnemy[i-1]:
+        runningTotal += plotFitnessOfEnemy[i]
+        j += 1
+    else:
+        plotMeanFitnessEnemy.append(runningTotal/j)
+        j = 0
+        runningTotal = 0
+print(plotFitnessOfEnemy)
+print(plotGenerationNumberEnemy)
+plt.plot(plotGenerationNumberEnemy, plotFitnessOfEnemy)
+plt.show()
