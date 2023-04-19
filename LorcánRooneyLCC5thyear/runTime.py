@@ -277,6 +277,9 @@ import sumfitnesses
 plotMeanFitnessEnemy = sumfitnesses.sumfitnesses() # get an instance of the class in this file
 #print(plotFitnessOfEnemy)
 #print(plotGenerationNumberEnemy)
+f = open("best_fitness.csv", "a")# add the best fitness value for this run of the program to a file
+f.write(max(plotMeanFitnessEnemy))
+f.close()
 print(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy)) # print out the return value from the counter function
 plt.plot(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy)) # plot the return value from the counter function
 plt.show() # display the graph
