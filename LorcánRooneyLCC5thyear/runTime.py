@@ -65,7 +65,7 @@ def eval_genome(genome, config):
                     Game.Enemy.movement(outputs) # pass outputs from net to the enemy class inside the game class
                     Game.draw(0,0,0,0) # call the game draw function
                 if Game.winOrLose() == -1: # if the enemy catches the player then set the fitness to an absurdly high amount
-                    fitness = 100000
+                    fitness = 10000
                     break # exit the game loop 
                 elif Game.winOrLose() == -2: # if the player wins set the fitness to a low value minus the average distance from the player
                     fitness = 500-statistics.mean(averageDists)
@@ -170,7 +170,7 @@ def eval_enemy(genome, config, j):
             fitness = 0 # local var for fitness value of enemy
             
             if currGame.winOrLose() == -1: # if enemy wins fitness is equal to a large value minus how many frames it took to win
-                fitness = 100000-iters
+                fitness = 10000-iters
                 break # exit the loop
             elif currGame.winOrLose() == -2: # if the player wins then fitness is equal to a small value minus the distance to the player that the enemy was
                 fitness = 500-currGame.dist()
@@ -253,7 +253,7 @@ def run():
             elif Game.winOrLose() == -2:
                 print("Player 1 wins")
                 gameWon = True
-            Game.draw(0,0,0,0)
+            Game.draw(0,0,0,0) # call the draw function from the game class
             
             while gameWon:
                 Game.canvas.update() # update the game canvas, if i do not call this the window will simply crash. the reason for this as far as i can tell is that the code is in an infinite loop without updating the window so windows assumes the window has become unresponsive
@@ -264,18 +264,19 @@ def run():
         # declare a game for simulation play
         Game = game.game(root, canvas, 0,0,0,0, gameMode)
         
-        pop.run(eval_genomes, 10)
+        pop.run(eval_genomes, 10) # call the run funtion from population in the NEAT library
 
     
 #check if you are in the main file and if you are run the program (this is a library requirement)
 if __name__ == '__main__':
     run()
 
+# import the sumfitnesses file containing the function i wrote to get the mean of each generation's fitness values
 import sumfitnesses
 
-plotMeanFitnessEnemy = sumfitnesses.sumfitnesses()
+plotMeanFitnessEnemy = sumfitnesses.sumfitnesses() # get an instance of the class in this file
 #print(plotFitnessOfEnemy)
 #print(plotGenerationNumberEnemy)
-print(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy))
-plt.plot(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy))
-plt.show()
+print(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy)) # print out the return value from the counter function
+plt.plot(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy)) # plot the return value from the counter function
+plt.show() # display the graph
