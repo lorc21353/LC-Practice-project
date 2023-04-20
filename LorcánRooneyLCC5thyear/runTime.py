@@ -264,7 +264,7 @@ def run():
         # declare a game for simulation play
         Game = game.game(root, canvas, 0,0,0,0, gameMode)
         
-        pop.run(eval_genomes, 3) # call the run funtion from population in the NEAT library
+        pop.run(eval_genomes, 35) # call the run funtion from population in the NEAT library
 
     
 #check if you are in the main file and if you are run the program (this is a library requirement)
