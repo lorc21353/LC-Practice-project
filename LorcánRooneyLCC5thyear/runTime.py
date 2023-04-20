@@ -264,7 +264,7 @@ def run():
         # declare a game for simulation play
         Game = game.game(root, canvas, 0,0,0,0, gameMode)
         
-        pop.run(eval_genomes, 20) # call the run funtion from population in the NEAT library
+        pop.run(eval_genomes, 3) # call the run funtion from population in the NEAT library
 
     
 #check if you are in the main file and if you are run the program (this is a library requirement)
@@ -278,7 +278,7 @@ plotMeanFitnessEnemy = sumfitnesses.sumfitnesses() # get an instance of the clas
 #print(plotFitnessOfEnemy)
 #print(plotGenerationNumberEnemy)
 f = open("best_fitness.csv", "a")# add the best fitness value for this run of the program to a file
-f.write(str(max(plotFitnessOfEnemy)))
+f.write(str(max(plotFitnessOfEnemy))+ ",")
 f.close()
 print(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy)) # print out the return value from the counter function
 plt.plot(plotMeanFitnessEnemy.sumfitnesses(plotFitnessOfEnemy, plotGenerationNumberEnemy)) # plot the return value from the counter function
